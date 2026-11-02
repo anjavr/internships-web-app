@@ -83,3 +83,14 @@ internships-web-app/
 ├── database/        # SQL skripta za inicijalizaciju baze
 └── students.csv     # Testni podaci za uvoz studenata
 ```
+Aplikacije je realizovana kao studentski projekat u okviru predmeta Internet programiranje.
+
+## Konfiguracija i pokretanje
+
+Za pokretanje sistema potrebno je:
+
+- Instalirati odgovarajuće razvojno okruženje i zavisnosti za pojedinačne aplikacije.
+- Kreirati MySQL bazu podataka i izvršiti SQL skriptu iz direktorijuma `database`.
+- Podesiti pristupne podatke za bazu podataka i JWT tajni ključ putem varijabli okruženja.
+- Podesiti Groq API ključ putem varijable okruženja `GROQ_API_KEY`.
+- Pokrenuti backend servis i odgovarajuće korisničke aplikacije.
