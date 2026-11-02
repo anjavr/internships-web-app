@@ -1,0 +1,194 @@
+<div class="worklog-container">
+
+  <div class="page-header">
+    <h2 class="page-title">Dnevnik rada</h2>
+  </div>
+
+  <div class="loading-container" *ngIf="loading">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>Učitavanje...</p>
+  </div>
+
+  <mat-card class="empty-card" *ngIf="!loading && acceptedInternships.length === 0">
+    <mat-card-content>
+      <mat-icon class="empty-icon">work_off</mat-icon>
+      <h3>Nemate prihvaćenih prijava</h3>
+      <p>Dnevnik rada možete voditi samo za prakse na koje ste prihvaćeni.</p>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="!loading && acceptedInternships.length > 0">
+
+    <mat-card class="select-card">
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Odaberi praksu</mat-label>
+          <mat-select [(ngModel)]="selectedInternshipId" (ngModelChange)="onInternshipChange()">
+            <mat-option value="">-- Odaberi praksu --</mat-option>
+            <mat-option *ngFor="let i of acceptedInternships" [value]="i.id">
+              {{ i.title }} — {{ i.companyName }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>work</mat-icon>
+        </mat-form-field>
+
+        <div class="internship-info" *ngIf="getSelectedInternship()">
+          <div class="info-item">
+            <mat-icon>business</mat-icon>
+            <span>{{ getSelectedInternship()?.companyName }}</span>
+          </div>
+          <div class="info-item">
+            <mat-icon>calendar_today</mat-icon>
+            <span>{{ formatDate(getSelectedInternship()!.startDate) }} — {{ formatDate(getSelectedInternship()!.endDate)
+              }}</span>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="selectedInternshipId">
+
+      <!-- status -->
+      <mat-card class="submit-card" *ngIf="currentDiary && isPracticeStarted()">
+        <mat-card-content>
+          <div class="diary-status">
+
+            <ng-container *ngIf="currentDiary.status === 'IN_PROGRESS'">
+              <div class="status-info">
+                <mat-icon class="status-icon in-progress">edit</mat-icon>
+                <span>Dnevnik je u toku, možete unositi aktivnosti.</span>
+              </div>
+              <button mat-raised-button color="accent" (click)="submitDiary()" class="submit-btn"
+                [disabled]="!isDiarySubmittable()"
+                [matTooltip]="!isDiarySubmittable() ? 'Predaja je moguća nakon završetka prakse i popunjavanja svih unosa' : ''">
+                <mat-icon>send</mat-icon>
+                Predaj dnevnik
+              </button>
+            </ng-container>
+            <ng-container *ngIf="currentDiary.status === 'FEEDBACK_DONE'">
+              <div class="status-info">
+                <mat-icon class="status-icon feedback-done">check_circle</mat-icon>
+                <span>Mentor je završio sa komentarima — možete predati dnevnik.</span>
+              </div>
+              <button mat-raised-button color="accent" (click)="submitDiary()" class="submit-btn"
+                [disabled]="!isDiarySubmittable()"
+                [matTooltip]="!isDiarySubmittable() ? 'Predaja je moguća nakon završetka prakse i popunjavanja svih unosa' : ''">
+                <mat-icon>send</mat-icon>
+                Predaj dnevnik
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="currentDiary.status === 'SUBMITTED'">
+              <div class="status-info">
+                <mat-icon class="status-icon submitted">hourglass_empty</mat-icon>
+                <span>Dnevnik je predan.</span>
+              </div>
+            </ng-container>
+
+            <div class="evaluation-result" *ngIf="currentEvaluation">
+              <span class="eval-rating">
+                <mat-icon>star</mat-icon>
+                Ocjena: <strong>{{ currentEvaluation.rating }}</strong>
+              </span>
+              <span class="eval-comment" *ngIf="currentEvaluation.comments">
+                {{ currentEvaluation.comments }}
+              </span>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- lista unosa -->
+      <div class="loading-container" *ngIf="loadingWorklogs">
+        <mat-icon>hourglass_empty</mat-icon>
+        <p>Učitavanje sedmica...</p>
+      </div>
+
+      <div class="weeks-list" *ngIf="!loadingWorklogs && worklogs.length > 0">
+        <mat-card class="week-card" *ngFor="let log of getSortedLogs()" [class.week-filled]="isFilled(log)"
+          [class.week-locked]="isFuture(log)">
+          <mat-card-content>
+
+            <div class="week-header">
+              <div class="week-info">
+                <span class="week-label">Sedmica {{ getWeekNumber(log.weekStartDate) + 1}}</span>
+                <span class="week-date">{{ formatDate(log.weekStartDate) }}</span>
+              </div>
+              <div class="week-status">
+                <span class="hours-badge" *ngIf="isFilled(log)">
+                  <mat-icon>schedule</mat-icon>{{ log.hours }}h
+                </span>
+                <span class="future-badge" *ngIf="isFuture(log)">
+                  <mat-icon>lock_clock</mat-icon>Još nije dostupno
+                </span>
+                <span class="missing-badge" *ngIf="!isFilled(log) && !isFuture(log)">
+                  <mat-icon>warning</mat-icon>Nije popunjeno
+                </span>
+              </div>
+            </div>
+
+            <mat-divider class="divider"></mat-divider>
+
+            <ng-container *ngIf="isFilled(log) && !(editingLogId === log.id)">
+              <p class="log-activities">{{ log.activities }}</p>
+
+              <div class="feedback-section" *ngIf="log.supervisorFeedback">
+                <p class="feedback-label">
+                  <mat-icon>comment</mat-icon>Komentar mentora:
+                </p>
+                <p class="feedback-text">{{ log.supervisorFeedback }}</p>
+              </div>
+
+              <button mat-stroked-button color="primary" class="edit-btn" *ngIf="isDiaryEditable()"
+                (click)="startEditLog(log)">
+                <mat-icon>edit</mat-icon>Uredi
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="(!isFilled(log) || editingLogId === log.id) && !isFuture(log) && isDiaryEditable()">
+              <form [formGroup]="worklogForm" (ngSubmit)="saveLog(log)">
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Aktivnosti ove sedmice</mat-label>
+                  <textarea matInput formControlName="activities" rows="4"
+                    placeholder="Opišite šta ste radili ove sedmice..."></textarea>
+                  <mat-hint>Minimalno 20 karaktera</mat-hint>
+                  <mat-error *ngIf="worklogForm.get('activities')?.hasError('required')">Obavezno polje</mat-error>
+                  <mat-error *ngIf="worklogForm.get('activities')?.hasError('minlength')">Minimalno 20
+                    karaktera</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="hours-field">
+                  <mat-label>Broj sati</mat-label>
+                  <input matInput type="number" formControlName="hours" placeholder="npr. 20">
+                  <mat-icon matSuffix>schedule</mat-icon>
+                  <mat-error *ngIf="worklogForm.get('hours')?.hasError('required')">Obavezno polje</mat-error>
+                  <mat-error *ngIf="worklogForm.get('hours')?.hasError('min')">Minimum 1 sat</mat-error>
+                  <mat-error *ngIf="worklogForm.get('hours')?.hasError('max')">Maksimum 60 sati</mat-error>
+                </mat-form-field>
+
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="worklogForm.invalid">
+                    <mat-icon>save</mat-icon>Sačuvaj
+                  </button>
+                  <button mat-stroked-button type="button" *ngIf="editingLogId === log.id" (click)="cancelEditLog()">
+                    Odustani
+                  </button>
+                </div>
+
+              </form>
+            </ng-container>
+
+            <p class="future-msg" *ngIf="isFuture(log)">
+              Unos će biti dostupan od {{ formatDate(log.weekStartDate) }}
+            </p>
+
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+  </div>
+</div>

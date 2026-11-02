@@ -1,0 +1,171 @@
+<div class="internship-detail-container">
+  <button mat-button routerLink="/dashboard/internships" class="back-btn">
+    <mat-icon>arrow_back</mat-icon>
+    Nazad na listu
+  </button>
+
+  <ng-container *ngIf="internship; else loading">
+
+    <mat-card class="header-card">
+      <div class="header-content">
+
+        <div class="company-logo">
+          <mat-icon>business</mat-icon>
+        </div>
+
+        <div class="header-info">
+          <h1 class="internship-title">{{ internship.title }}</h1>
+
+          <p class="company-name">
+            <mat-icon>business</mat-icon>
+            {{ internship.companyName }}
+          </p>
+
+          <div class="header-badges">
+            <span class="badge" [ngClass]="getWorkTypeClass()">
+              {{ getWorkTypeLabel() }}
+            </span>
+            <span class="badge badge-location">
+              {{ internship.location }}
+            </span>
+            <span class="badge badge-year">
+              {{ getRequiredYearLabel() }}
+            </span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="positions-info">
+            <span class="positions-label">Mjesta</span>
+            <span class="positions-count"
+                [class.no-positions]="getAvailablePositions() === 0">
+                {{ internship.positions }}
+            </span>
+          </div>
+
+          <button mat-raised-button color="primary" class="apply-btn"
+                  [disabled]="applied || getAvailablePositions() === 0"
+                  (click)="apply()">
+            {{ applied ? 'Prijavljeni ste' : 'Prijavi se' }}
+          </button>
+        </div>
+
+      </div>
+    </mat-card>
+
+    <div class="detail-grid">
+
+      <div class="left-column">
+
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>O praksi</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="short-desc">{{ internship.shortDesc }}</p>
+            <mat-divider class="divider"></mat-divider>
+            <p class="description">{{ internship.description }}</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Tehnologije</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="tech-chips">
+              <span class="tech-chip" *ngFor="let tech of getTechnologies()">
+                {{ tech }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Zahtjevi</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="requirements">{{ internship.requirements }}</p>
+            <div *ngIf="getAdditionalRequirements().length > 0">
+              <p class="subsection-title">Dodatni zahtjevi:</p>
+              <ul class="requirements-list">
+                <li *ngFor="let req of getAdditionalRequirements()">{{ req }}</li>
+              </ul>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <div class="right-column">
+
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Detalji prakse</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+
+            <div class="detail-item">
+              <span class="detail-label">Period</span>
+              <span class="detail-value">{{ internship.startDate | date:'dd.MM.yyyy' }} — {{ internship.endDate | date:'dd.MM.yyyy' }}</span>
+            </div>
+            <mat-divider class="divider"></mat-divider>
+
+            <div class="detail-item">
+              <span class="detail-label">Rok prijave</span>
+              <span class="detail-value">{{ internship.applicationDeadline | date:'dd.MM.yyyy' }}</span>
+            </div>
+            <mat-divider class="divider"></mat-divider>
+
+            <div class="detail-item">
+              <span class="detail-label">Broj mjesta</span>
+              <span class="detail-value">{{ internship.positions }}</span>
+            </div>
+            <mat-divider class="divider"></mat-divider>
+
+            <div class="detail-item">
+              <span class="detail-label">Minimalni prosjek</span>
+              <span class="detail-value">{{ internship.minGpa || 'Nije definisan' }}</span>
+            </div>
+            <mat-divider class="divider"></mat-divider>
+
+            <div class="detail-item">
+              <span class="detail-label">Godina studija</span>
+              <span class="detail-value">{{ getRequiredYearLabel() }}</span>
+            </div>
+            <mat-divider class="divider"></mat-divider>
+
+            <div class="detail-item">
+              <span class="detail-label">Strani jezici</span>
+              <div class="lang-chips">
+                <span class="lang-chip" *ngFor="let lang of getLanguages()">{{ lang }}</span>
+              </div>
+            </div>
+
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="success-card" *ngIf="applied">
+          <mat-card-content>
+            <mat-icon class="success-icon">check_circle</mat-icon>
+            <h3>Prijava uspješna!</h3>
+            <p>Vaša prijava je zabilježena. Pratite status u sekciji "Moje prijave".</p>
+            <button mat-stroked-button routerLink="/dashboard/my-internships">
+              Moje prijave
+            </button>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading">
+      <p>Učitavanje...</p>
+    </div>
+  </ng-template>
+
+</div>

@@ -1,0 +1,86 @@
+<div class="ai-container">
+
+  <div class="page-header">
+    <h2 class="page-title">AI Preporuke</h2>
+    <button mat-raised-button color="primary" (click)="generate()" [disabled]="generating">
+      <mat-icon>auto_awesome</mat-icon>
+      {{ generating ? 'Generišem...' : 'Generiši preporuke' }}
+    </button>
+  </div>
+
+  <div *ngIf="loading || generating" class="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>{{ generating ? 'AI analizira vaš profil...' : 'Učitavanje preporuka...' }}</p>
+  </div>
+
+  <div *ngIf="!loading && !generating && recommendations.length === 0" class="empty-msg">
+    <mat-icon>auto_awesome</mat-icon>
+    <span>Nemate preporuka. Kliknite "Generiši preporuke" da AI analizira vaš profil.</span>
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading && !generating && recommendations.length > 0">
+    <mat-card class="rec-card" *ngFor="let rec of recommendations; let i = index">
+      <mat-card-content>
+
+        <div class="card-header">
+          <div class="card-title-section">
+            <div class="rank-title">
+              <span class="rank-badge">{{ i + 1 }}</span>
+              <h3 class="app-title">{{ rec.internshipTitle }}</h3>
+            </div>
+            <p class="company-name">
+              <mat-icon>business</mat-icon>
+              {{ rec.companyName }}
+            </p>
+          </div>
+          <span class="score-badge" [style.background-color]="getScoreColor(rec.score) + '22'"
+                                    [style.color]="getScoreColor(rec.score)">
+            {{ getScorePercent(rec.score) }}%
+          </span>
+        </div>
+
+        <div class="score-bar-wrapper">
+          <div class="score-bar">
+            <div class="score-fill"
+                 [style.width.%]="getScorePercent(rec.score)"
+                 [style.background-color]="getScoreColor(rec.score)">
+            </div>
+          </div>
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <p class="explanation">{{ rec.explanation }}</p>
+
+        <div class="card-details">
+          <div class="detail-item">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ rec.location }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>laptop_mac</mat-icon>
+            <span class="badge" [ngClass]="getWorkTypeLabel(rec.workType)">
+              {{ getWorkTypeLabel(rec.workType) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="tech-chips" *ngIf="getTechnologies(rec.technologies).length > 0">
+          <span class="tech-chip" *ngFor="let tech of getTechnologies(rec.technologies)">
+            {{ tech }}
+          </span>
+        </div>
+
+        <div class="card-actions">
+          <button mat-stroked-button color="primary"
+                  [routerLink]="['/dashboard/internships', rec.internshipId]">
+            <mat-icon>visibility</mat-icon>
+            Detalji prakse
+          </button>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

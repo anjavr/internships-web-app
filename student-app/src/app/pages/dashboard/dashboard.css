@@ -1,0 +1,70 @@
+.dashboard-container {
+  height: 100vh;
+  background-color: #73A5CA;
+}
+
+.sidenav {
+  width: 240px;
+  background: #EEEEEE;
+  color: #73A5CA;
+  padding: 16px 0;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 16px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+}
+
+.topbar{
+  color: #EEEEEE;
+  margin-bottom: 20px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: #73A5CA;
+  color: #EEEEEE;
+}
+
+.topbar-left h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.logout-btn {
+  background-color: white;
+  border-radius: 8px;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.logout-btn mat-icon {
+  color: #7DAACB;
+}

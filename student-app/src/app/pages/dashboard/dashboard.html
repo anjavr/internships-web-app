@@ -1,0 +1,38 @@
+<mat-sidenav-container class="dashboard-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+
+    <div class="logo">
+          <mat-icon matListItemIcon>menu</mat-icon>
+        <span>Student Portal</span>
+    </div>
+
+    <app-navbar></app-navbar>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+
+  <div class="topbar">
+  <div class="topbar-left">
+    <h1>Kontrolna tabla</h1>
+  </div>
+
+  <div class="topbar-right">
+    <div class="user-info">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ userName }}</span>
+    </div>
+
+    <button mat-icon-button (click)="logout()" class="logout-btn" matTooltip="Odjava">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+  </div>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

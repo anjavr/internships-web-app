@@ -1,0 +1,124 @@
+<div class="my-internships-container">
+
+  <div class="page-header">
+    <h2 class="page-title">Moje prijave</h2>
+  </div>
+
+  <mat-tab-group animationDuration="200ms">
+  <mat-tab label="Sve prijave">
+    <ng-template matTabContent>
+      <div class="tab-content">
+        <ng-container *ngTemplateOutlet="applicationCards; context: { apps: applications }">
+        </ng-container>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      U razmatranju ({{ applied.length }})
+    </ng-template>
+    <ng-template matTabContent>
+      <div class="tab-content">
+        <ng-container *ngTemplateOutlet="applicationCards; context: { apps: applied }">
+        </ng-container>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon accepted-icon">check_circle</mat-icon>
+      Prihvaćene ({{ accepted.length }})
+    </ng-template>
+    <ng-template matTabContent>
+      <div class="tab-content">
+        <ng-container *ngTemplateOutlet="applicationCards; context: { apps: accepted }">
+        </ng-container>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon rejected-icon">cancel</mat-icon>
+      Odbijene ({{ rejected.length }})
+    </ng-template>
+    <ng-template matTabContent>
+      <div class="tab-content">
+        <ng-container *ngTemplateOutlet="applicationCards; context: { apps: rejected }">
+        </ng-container>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+</mat-tab-group>
+
+</div>
+
+<ng-template #applicationCards let-apps="apps">
+  <div class="cards-grid">
+
+    <p *ngIf="apps.length === 0" class="empty-msg">
+      <mat-icon>inbox</mat-icon>
+      Nema prijava u ovoj kategoriji
+    </p>
+
+    <mat-card class="application-card" *ngFor="let app of apps">
+      <mat-card-content>
+
+        <div class="card-header">
+          <div class="card-title-section">
+            <h3 class="app-title">{{ app.internshipTitle }}</h3>
+            <p class="company-name">
+              <mat-icon>business</mat-icon>
+              {{ app.companyName }}
+            </p>
+          </div>
+          <span class="status-badge" [ngClass]="getStatusClass(app.applicationStatus)">
+            <mat-icon class="status-icon">{{ getStatusIcon(app.applicationStatus) }}</mat-icon>
+                {{ getStatusLabel(app.applicationStatus) }}
+          </span>
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <div class="card-details">
+          <div class="detail-item">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ app.location }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>laptop_mac</mat-icon>
+            <span class="badge" [ngClass]="getWorkTypeClass(app.workType)">
+              {{ getWorkTypeLabel(app.workType) }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>calendar_today</mat-icon>
+            <span>{{ formatDate(app.startDate) }} — {{ formatDate(app.endDate) }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>send</mat-icon>
+            <span>Prijavljeno: {{ formatDate(app.appliedAt) }}</span>
+          </div>
+        </div>
+
+        <div class="note-section" *ngIf="app.note">
+          <mat-icon>comment</mat-icon>
+          <p>{{ app.note }}</p>
+        </div>
+
+        <div class="card-actions">
+          <button mat-stroked-button color="primary"
+                  [routerLink]="['/dashboard/internships', app.internshipId]">
+            <mat-icon>visibility</mat-icon>
+            Detalji prakse
+          </button>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</ng-template>

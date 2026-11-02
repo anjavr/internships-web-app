@@ -1,0 +1,22 @@
+# Dependencies
+**/node_modules/
+
+# Build files
+**/build/
+**/target/
+*.class
+
+# IDE
+**/.idea/
+**/.metadata/
+
+# Uploaded files
+**/uploads/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# System
+.DS_Store

@@ -1,0 +1,319 @@
+<div class="cv-container">
+  <h2 class="cv-title">Moj CV</h2>
+
+  <mat-tab-group animationDuration="200ms">
+
+    <!-- tab 1 -->
+    <mat-tab label="Opšti podaci">
+      <div class="tab-content">
+
+        <mat-card class="photo">
+          <mat-card-title class="card-title"></mat-card-title>
+          <mat-card-content>
+
+            <div class="photo-section">
+
+              <div class="photo-preview">
+                <img *ngIf="photoPreview" [src]="photoPreview" alt="Profilna slika">
+                <mat-icon *ngIf="!photoPreview" class="photo-placeholder">person</mat-icon>
+              </div>
+
+              <div class="photo-action">
+                <input type="file" #fileInput hidden accept="image/*"
+                       (change)="onPhotoSelected($event)">
+
+                <button mat-stroked-button (click)="fileInput.click()" class="upload-btn">
+                  <mat-icon>upload</mat-icon> Odaberi sliku
+                </button>
+
+                <button mat-raised-button color="primary"
+                        [disabled]="!selectedPhoto"
+                        (click)="uploadPhoto()">
+                  Sačuvaj sliku
+                </button>
+              </div>
+
+            </div>
+
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="section-card">
+          <mat-card-title class="card-title">Lični podaci</mat-card-title>
+          <mat-card-content>
+
+            <form [formGroup]="generalForm" (ngSubmit)="saveGeneral()">
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Ime i prezime</mat-label>
+                  <input matInput formControlName="fullName">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" type="email">
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Telefon</mat-label>
+                  <input matInput formControlName="phone">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Adresa</mat-label>
+                  <input matInput formControlName="address">
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Kratki opis</mat-label>
+                <textarea matInput formControlName="summary" rows="4"></textarea>
+              </mat-form-field>
+
+              <button mat-raised-button color="primary" type="submit"
+                      [disabled]="generalForm.invalid">
+                <mat-icon>save</mat-icon> Sačuvaj
+              </button>
+
+            </form>
+
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+    <!-- tab 2 -->
+    <mat-tab label="Obrazovanje">
+      <div class="tab-content">
+
+        <mat-card *ngFor="let edu of educationList; let i = index" class="section-card">
+          <mat-card-content>
+            <div class="list-item-header">
+              <div>
+                <strong>{{ edu.institution }}</strong>
+                <p class="subtitle">{{ edu.degree }} - {{ edu.field }}</p>
+                <p class="date-range">
+                  {{ edu.startDate | date:'dd.MM.yyyy' }} —
+                  {{ edu.endDate ? (edu.endDate | date:'dd.MM.yyyy') : 'danas' }}
+                </p>
+              </div>
+
+              <button mat-icon-button color="warn" (click)="removeEducation(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <p *ngIf="educationList.length === 0" class="empty-msg">
+          Nema dodanog obrazovanja
+        </p>
+
+        <mat-card class="section-card">
+          <mat-card-title class="card-title">Dodaj obrazovanje</mat-card-title>
+          <mat-card-content>
+
+            <form [formGroup]="educationForm" (ngSubmit)="addEducation()">
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Institucija</mat-label>
+                <input matInput formControlName="institution">
+              </mat-form-field>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Stepen</mat-label>
+                  <input matInput formControlName="degree">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Smjer</mat-label>
+                  <input matInput formControlName="field">
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Početak</mat-label>
+                  <input matInput [matDatepicker]="eduStart" formControlName="startDate">
+                  <mat-datepicker-toggle matIconSuffix [for]="eduStart"></mat-datepicker-toggle>
+                  <mat-datepicker #eduStart></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Kraj</mat-label>
+                  <input matInput [matDatepicker]="eduEnd" formControlName="endDate">
+                  <mat-datepicker-toggle matIconSuffix [for]="eduEnd"></mat-datepicker-toggle>
+                  <mat-datepicker #eduEnd></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <button mat-raised-button color="primary" type="submit">
+                Dodaj
+              </button>
+
+            </form>
+
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+    <!-- tab 3 -->
+    <mat-tab label="Radno iskustvo">
+      <div class="tab-content">
+
+        <mat-card *ngFor="let exp of experienceList; let i = index" class="section-card">
+          <mat-card-content>
+            <div class="list-item-header">
+              <div>
+                <strong>{{ exp.position }}</strong>
+                <p class="subtitle">{{ exp.company }}</p>
+                <p class="date-range">
+                  {{ exp.startDate | date:'dd.MM.yyyy' }} —
+                  {{ exp.endDate ? (exp.endDate | date:'dd.MM.yyyy') : 'danas' }}
+                </p>
+                <p *ngIf="exp.description">{{ exp.description }}</p>
+              </div>
+
+              <button mat-icon-button color="warn" (click)="removeExperience(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <p *ngIf="experienceList.length === 0" class="empty-msg">
+          Nema radnog iskustva
+        </p>
+
+        <mat-card class="section-card">
+          <mat-card-title class="card-title">Dodaj iskustvo</mat-card-title>
+          <mat-card-content>
+
+            <form [formGroup]="experienceForm" (ngSubmit)="addExperience()">
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Pozicija</mat-label>
+                  <input matInput formControlName="position">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Kompanija</mat-label>
+                  <input matInput formControlName="company">
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Početak</mat-label>
+                  <input matInput [matDatepicker]="expStart" formControlName="startDate">
+                  <mat-datepicker-toggle matIconSuffix [for]="expStart"></mat-datepicker-toggle>
+                  <mat-datepicker #expStart></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Kraj</mat-label>
+                  <input matInput [matDatepicker]="expEnd" formControlName="endDate">
+                  <mat-datepicker-toggle matIconSuffix [for]="expEnd"></mat-datepicker-toggle>
+                  <mat-datepicker #expEnd></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Opis</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+              </mat-form-field>
+
+              <button mat-raised-button color="primary" type="submit">
+                Dodaj
+              </button>
+
+            </form>
+
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+    <!-- tab 4 -->
+    <mat-tab label="Vještine i interesovanja">
+      <div class="tab-content">
+
+        <mat-card class="section-card">
+          <mat-card-title class="card-title">Vještine</mat-card-title>
+          <mat-card-content>
+
+            <div class="chip-list">
+              <div class="skill-chip" *ngFor="let skill of skills">
+                <span>{{ skill.name }}</span>
+
+                <span class="level-badge">{{ skill.level }}</span>
+
+                <button mat-icon-button (click)="removeSkill(skill)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <form [formGroup]="skillForm" (ngSubmit)="addSkill()">
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Vještina</mat-label>
+                  <input matInput formControlName="name">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Nivo</mat-label>
+                  <input matInput formControlName="level" placeholder="npr. Napredno, B2...">
+                  </mat-form-field>
+              </div>
+
+              <button mat-raised-button color="primary" type="submit">
+                Dodaj
+              </button>
+            </form>
+
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="section-card">
+          <mat-card-title class="card-title">Interesovanja</mat-card-title>
+          <mat-card-content>
+
+            <div class="chip-list">
+              <div class="skill-chip" *ngFor="let interest of interests">
+                <span>{{ interest.name }}</span>
+
+                <button mat-icon-button (click)="removeInterest(interest)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <form [formGroup]="interestForm" (ngSubmit)="addInterest()">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Interesovanje</mat-label>
+                <input matInput formControlName="name">
+              </mat-form-field>
+
+              <button mat-raised-button color="primary" type="submit">
+                Dodaj
+              </button>
+            </form>
+
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

@@ -1,0 +1,186 @@
+.ai-container {
+  max-width: 1100px;
+  margin: 20px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 40px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  color: #2C2C2C;
+  margin: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 64px 24px;
+  color: #757575;
+}
+
+.empty-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9e9e9e;
+  font-style: italic;
+  padding: 24px 0;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.rec-card {
+  border-radius: 12px !important;
+  transition: box-shadow 0.2s;
+}
+
+.rec-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.rank-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.rank-badge {
+  width: 26px;
+  height: 26px;
+  background: #7DAACB;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: #212121;
+}
+
+.company-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #616161;
+  font-size: 14px;
+  margin: 0;
+}
+
+.company-name mat-icon {
+  font-size: 16px;
+}
+
+.score-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.score-bar-wrapper {
+  margin-bottom: 12px;
+}
+
+.score-bar {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.divider {
+  margin: 12px 0;
+}
+
+.explanation {
+  color: #424242;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #424242;
+}
+
+.detail-item mat-icon {
+  font-size: 18px;
+  color: #757575;
+}
+
+.badge {
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-onsite { background: #e8f5e9; color: #2e7d32; }
+.badge-remote { background: #e3f2fd; color: #1565c0; }
+.badge-hybrid { background: #fff3e0; color: #e65100; }
+
+.tech-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tech-chip {
+  background: #e8eaf6;
+  color: #3f51b5;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
